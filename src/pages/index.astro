@@ -5,12 +5,29 @@ import { getPublishedPosts } from "../lib/posts";
 
 const posts = (await getPublishedPosts()).slice(0, 3);
 const focusAreas = ["Python 爬虫", "JS 逆向", "AI 大模型"];
+const rootUrl = Astro.site ? Astro.site.toString() : Astro.url.origin;
+const websiteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "鸣的技术手记",
+  description: "记录 Python 爬虫、JS 逆向和 AI 大模型实践的个人博客。",
+  url: rootUrl,
+  inLanguage: "zh-CN",
+};
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "鸣",
+  url: rootUrl,
+  description: "长期记录 Python 爬虫、JS 逆向和 AI 大模型实践的技术作者。",
+};
 ---
 
 <BaseLayout
   title="鸣的技术手记"
   description="记录 Python 爬虫、JS 逆向和 AI 大模型实践的个人博客。"
   keywords={["Python 爬虫", "JS 逆向", "AI 大模型", "技术博客"]}
+  structuredData={[websiteJsonLd, personJsonLd]}
 >
   <section class="container hero">
     <div class="hero-copy">

@@ -1,8 +1,22 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+
+const rootUrl = Astro.site ? Astro.site.toString() : Astro.url.origin;
+const personJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "鸣",
+  url: rootUrl,
+  description: "关注 Python 爬虫、JS 逆向和 AI 大模型实践的技术作者。",
+};
 ---
 
-<BaseLayout title="关于鸣 | 鸣的技术手记" description="关于鸣，以及这个博客会写什么。">
+<BaseLayout
+  title="关于鸣 | 鸣的技术手记"
+  description="关于鸣，以及这个博客会写什么。"
+  keywords={["鸣", "作者介绍", "Python 爬虫", "JS 逆向", "AI 大模型"]}
+  structuredData={personJsonLd}
+>
   <section class="container page-section about">
     <p class="eyebrow">About</p>
     <h1 class="page-title">关于鸣</h1>
