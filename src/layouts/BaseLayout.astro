@@ -11,6 +11,9 @@ const {
 const canonicalUrl = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).toString()
   : Astro.url.toString();
+const socialImageUrl = Astro.site
+  ? new URL("/og-image.svg", Astro.site).toString()
+  : `${Astro.url.origin}/og-image.svg`;
 ---
 
 <!doctype html>
@@ -20,14 +23,19 @@ const canonicalUrl = Astro.site
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
+    <meta name="theme-color" content="#d36a2e" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={socialImageUrl} />
+    <meta property="og:image:alt" content="鸣的技术手记分享图" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageUrl} />
     <link rel="canonical" href={canonicalUrl} />
+    <link rel="alternate" type="application/rss+xml" title="鸣的技术手记 RSS" href="/rss.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
   </head>

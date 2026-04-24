@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">鸣的技术手记</title>
+  <desc id="desc">记录 Python 爬虫、JS 逆向和 AI 大模型实践的个人博客。</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#f3ebdc" />
+      <stop offset="100%" stop-color="#e7d8c0" />
+    </linearGradient>
+    <radialGradient id="glowA" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(180 140) rotate(45) scale(360 360)">
+      <stop offset="0%" stop-color="#d36a2e" stop-opacity="0.30" />
+      <stop offset="100%" stop-color="#d36a2e" stop-opacity="0" />
+    </radialGradient>
+    <radialGradient id="glowB" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(980 120) rotate(45) scale(320 320)">
+      <stop offset="0%" stop-color="#1d315b" stop-opacity="0.18" />
+      <stop offset="100%" stop-color="#1d315b" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glowA)" />
+  <rect width="1200" height="630" fill="url(#glowB)" />
+
+  <g stroke="rgba(24,24,26,0.08)" stroke-width="1">
+    <path d="M0 90H1200" />
+    <path d="M0 180H1200" />
+    <path d="M0 270H1200" />
+    <path d="M0 360H1200" />
+    <path d="M0 450H1200" />
+    <path d="M0 540H1200" />
+    <path d="M120 0V630" />
+    <path d="M240 0V630" />
+    <path d="M360 0V630" />
+    <path d="M480 0V630" />
+    <path d="M600 0V630" />
+    <path d="M720 0V630" />
+    <path d="M840 0V630" />
+    <path d="M960 0V630" />
+    <path d="M1080 0V630" />
+  </g>
+
+  <rect x="64" y="56" width="1072" height="518" rx="32" fill="rgba(255,250,244,0.72)" stroke="rgba(61,49,37,0.14)" />
+
+  <text x="112" y="140" fill="#d36a2e" font-size="28" font-family="Cascadia Code, Consolas, monospace" letter-spacing="4">
+    MING'S NOTES
+  </text>
+  <text x="112" y="250" fill="#18181a" font-size="84" font-weight="700" font-family="Georgia, 'Times New Roman', serif">
+    鸣的技术手记
+  </text>
+  <text x="112" y="324" fill="#655f59" font-size="34" font-family="Georgia, 'Times New Roman', serif">
+    把复杂问题拆开，把技术经验写暖。
+  </text>
+  <text x="112" y="404" fill="#655f59" font-size="28" font-family="Georgia, 'Times New Roman', serif">
+    Python 爬虫 · JS 逆向 · AI 大模型
+  </text>
+
+  <g transform="translate(112 456)">
+    <rect width="246" height="52" rx="26" fill="rgba(255,250,241,0.92)" stroke="rgba(61,49,37,0.14)" />
+    <text x="24" y="33" fill="#655f59" font-size="22" font-family="Cascadia Code, Consolas, monospace">先拆链路，再写结论</text>
+  </g>
+
+  <g transform="translate(766 126)">
+    <rect width="290" height="220" rx="28" fill="rgba(255,252,247,0.76)" stroke="rgba(61,49,37,0.14)" />
+    <text x="28" y="48" fill="#d36a2e" font-size="22" font-family="Cascadia Code, Consolas, monospace">Signal</text>
+    <text x="28" y="96" fill="#655f59" font-size="18" font-family="Cascadia Code, Consolas, monospace">研究方向</text>
+    <text x="28" y="126" fill="#18181a" font-size="26" font-family="Georgia, 'Times New Roman', serif">爬虫 · 逆向 · 大模型</text>
+    <text x="28" y="170" fill="#655f59" font-size="18" font-family="Cascadia Code, Consolas, monospace">写作习惯</text>
+    <text x="28" y="200" fill="#18181a" font-size="26" font-family="Georgia, 'Times New Roman', serif">重视排查过程</text>
+  </g>
+
+  <g transform="translate(736 382)">
+    <rect width="320" height="120" rx="24" fill="#1f1d21" />
+    <text x="26" y="40" fill="#f6e8d9" font-size="20" font-family="Cascadia Code, Consolas, monospace">$ ./observe --target request-chain</text>
+    <text x="26" y="74" fill="#f6e8d9" font-size="20" font-family="Cascadia Code, Consolas, monospace">[trace] signature located</text>
+    <text x="26" y="104" fill="#f6e8d9" font-size="20" font-family="Cascadia Code, Consolas, monospace">[note ] publish after verification</text>
+  </g>
+</svg>
