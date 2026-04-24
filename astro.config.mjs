@@ -8,7 +8,7 @@ const site =
     ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
     : process.env.VERCEL_URL
       ? `https://${process.env.VERCEL_URL}`
-      : "https://blog.example.com");
+      : "https://my-personal-blog-six-gray.vercel.app");
 
 export default defineConfig({
   site,
