@@ -2,11 +2,12 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostCard from "../../components/PostCard.astro";
 import { getPublishedPosts } from "../../lib/posts";
+import { siteConfig } from "../../lib/site";
 
 const posts = await getPublishedPosts();
 ---
 
-<BaseLayout title="文章 | 鸣的技术手记" description="全部博客文章。">
+<BaseLayout title={`文章 | ${siteConfig.title}`} description="全部博客文章。">
   <section class="container page-section list-page">
     <div class="intro-card">
       <p class="eyebrow">Blog</p>

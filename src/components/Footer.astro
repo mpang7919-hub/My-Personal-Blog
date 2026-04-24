@@ -1,7 +1,13 @@
+---
+import { siteConfig } from "../lib/site";
+---
+
 <footer class="site-footer">
   <div class="container footer-inner">
-    <p>鸣的技术手记。写爬虫、逆向和大模型，也写那些慢慢想明白的过程。</p>
-    <a href="/rss.xml">RSS</a>
+    <p>{siteConfig.footerText}</p>
+    <div class="footer-links">
+      {siteConfig.socialLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
   </div>
 </footer>
 
@@ -22,5 +28,11 @@
 
   .footer-inner p {
     margin: 0;
+  }
+
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
   }
 </style>

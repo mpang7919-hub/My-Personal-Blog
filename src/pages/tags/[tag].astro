@@ -1,7 +1,8 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import PostCard from "../../components/PostCard.astro";
-import { getAllTags, getPublishedPosts } from "../../lib/posts";
+import { getAllTags, getPostsByTag } from "../../lib/posts";
+import { siteConfig } from "../../lib/site";
 
 export async function getStaticPaths() {
   const tags = await getAllTags();
@@ -13,13 +14,11 @@ export async function getStaticPaths() {
 }
 
 const { tag } = Astro.props;
-const posts = (await getPublishedPosts()).filter((post) =>
-  post.data.tags.includes(tag),
-);
+const posts = await getPostsByTag(tag);
 ---
 
 <BaseLayout
-  title={`#${tag} | 鸣的技术手记`}
+  title={`#${tag} | ${siteConfig.title}`}
   description={`标签 ${tag} 下的文章。`}
   keywords={[tag, "标签归档", "技术博客"]}
 >

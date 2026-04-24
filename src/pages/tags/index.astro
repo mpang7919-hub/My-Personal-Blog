@@ -1,20 +1,14 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getAllTags, getPublishedPosts } from "../../lib/posts";
+import { getAllTags, getTagCounts } from "../../lib/posts";
+import { siteConfig } from "../../lib/site";
 
 const tags = await getAllTags();
-const posts = await getPublishedPosts();
-const counts = new Map();
-
-for (const post of posts) {
-  for (const tag of post.data.tags) {
-    counts.set(tag, (counts.get(tag) ?? 0) + 1);
-  }
-}
+const counts = await getTagCounts();
 ---
 
 <BaseLayout
-  title="标签 | 鸣的技术手记"
+  title={`标签 | ${siteConfig.title}`}
   description="按标签浏览文章。"
   keywords={["标签页", "技术博客", "Python 爬虫", "JS 逆向", "AI 大模型"]}
 >

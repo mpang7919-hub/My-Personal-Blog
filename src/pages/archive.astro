@@ -1,17 +1,13 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getPublishedPosts } from "../lib/posts";
+import { getGroupedPostsByYear } from "../lib/posts";
+import { siteConfig } from "../lib/site";
 
-const posts = await getPublishedPosts();
-const groups = posts.reduce((acc, post) => {
-  const year = post.data.pubDate.getFullYear();
-  acc.set(year, [...(acc.get(year) ?? []), post]);
-  return acc;
-}, new Map());
+const groups = await getGroupedPostsByYear();
 ---
 
 <BaseLayout
-  title="归档 | 鸣的技术手记"
+  title={`归档 | ${siteConfig.title}`}
   description="按年份归档的文章列表。"
   keywords={["归档页", "时间线", "技术博客"]}
 >

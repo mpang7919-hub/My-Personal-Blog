@@ -1,65 +1,63 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import PostCard from "../components/PostCard.astro";
-import { getPublishedPosts } from "../lib/posts";
+import { getLatestPosts } from "../lib/posts";
+import { siteConfig } from "../lib/site";
 
-const posts = (await getPublishedPosts()).slice(0, 3);
-const focusAreas = ["Python 爬虫", "JS 逆向", "AI 大模型"];
+const posts = await getLatestPosts(3);
 const rootUrl = Astro.site ? Astro.site.toString() : Astro.url.origin;
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: "鸣的技术手记",
-  description: "记录 Python 爬虫、JS 逆向和 AI 大模型实践的个人博客。",
+  name: siteConfig.title,
+  description: siteConfig.description,
   url: rootUrl,
   inLanguage: "zh-CN",
 };
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "鸣",
+  name: siteConfig.author.name,
   url: rootUrl,
-  description: "长期记录 Python 爬虫、JS 逆向和 AI 大模型实践的技术作者。",
+  description: siteConfig.author.shortBio,
 };
 ---
 
 <BaseLayout
-  title="鸣的技术手记"
-  description="记录 Python 爬虫、JS 逆向和 AI 大模型实践的个人博客。"
+  title={siteConfig.title}
+  description={siteConfig.description}
   keywords={["Python 爬虫", "JS 逆向", "AI 大模型", "技术博客"]}
   structuredData={[websiteJsonLd, personJsonLd]}
 >
   <section class="container hero">
     <div class="hero-copy">
-      <p class="eyebrow">Ming's Notes</p>
-      <h1 class="page-title">把复杂问题拆开，把技术经验写暖。</h1>
+      <p class="eyebrow">{siteConfig.hero.eyebrow}</p>
+      <h1 class="page-title">{siteConfig.hero.title}</h1>
       <p class="lede">
-        我是鸣，这里主要记录 Python 爬虫、JS 逆向和 AI 大模型相关的实战笔记。比起追热点，我更想把每一次排查、拆解和验证写得足够清楚，让后来的人少走一点弯路。
+        {siteConfig.hero.description}
       </p>
       <div class="actions">
-        <a class="button" href="/blog">开始阅读</a>
-        <a class="ghost" href="/about">关于鸣</a>
+        <a class="button" href={siteConfig.hero.primaryCta.href}>
+          {siteConfig.hero.primaryCta.label}
+        </a>
+        <a class="ghost" href={siteConfig.hero.secondaryCta.href}>
+          {siteConfig.hero.secondaryCta.label}
+        </a>
       </div>
       <div class="focus-list" aria-label="内容方向">
-        {focusAreas.map((item) => <span>{item}</span>)}
+        {siteConfig.focusAreas.map((item) => <span>{item}</span>)}
       </div>
     </div>
 
     <aside class="hero-panel">
       <p class="panel-label">Signal</p>
       <div class="signal-card">
-        <div>
-          <span class="signal-key">研究方向</span>
-          <strong>爬虫 · 逆向 · 大模型</strong>
-        </div>
-        <div>
-          <span class="signal-key">写作习惯</span>
-          <strong>先拆链路，再写结论</strong>
-        </div>
-        <div>
-          <span class="signal-key">站点气质</span>
-          <strong>技术感里留一点温度</strong>
-        </div>
+        {siteConfig.signalCards.map((item) => (
+          <div>
+            <span class="signal-key">{item.label}</span>
+            <strong>{item.value}</strong>
+          </div>
+        ))}
       </div>
       <pre><code>{`$ ./observe --target request-chain
 [trace] request captured

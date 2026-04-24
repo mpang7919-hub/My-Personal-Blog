@@ -1,38 +1,31 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { siteConfig } from "../lib/site";
 
 const rootUrl = Astro.site ? Astro.site.toString() : Astro.url.origin;
 const personJsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
-  name: "鸣",
+  name: siteConfig.author.name,
   url: rootUrl,
-  description: "关注 Python 爬虫、JS 逆向和 AI 大模型实践的技术作者。",
+  description: siteConfig.author.shortBio,
 };
 ---
 
 <BaseLayout
-  title="关于鸣 | 鸣的技术手记"
-  description="关于鸣，以及这个博客会写什么。"
+  title={`关于${siteConfig.author.name} | ${siteConfig.title}`}
+  description={`关于${siteConfig.author.name}，以及这个博客会写什么。`}
   keywords={["鸣", "作者介绍", "Python 爬虫", "JS 逆向", "AI 大模型"]}
   structuredData={personJsonLd}
 >
   <section class="container page-section about">
     <p class="eyebrow">About</p>
-    <h1 class="page-title">关于鸣</h1>
+    <h1 class="page-title">关于{siteConfig.author.name}</h1>
     <p class="lede">
-      鸣是一个喜欢钻细节的人，平时常在脚本、请求链路、混淆代码和模型实验里来回穿梭。遇到问题时，习惯先把现象拆开，再一点点把原因钉实。
+      {siteConfig.author.aboutIntro}
     </p>
     <div class="panel">
-      <p>
-        这个博客主要写三类内容：Python 爬虫的工程实践、JS 逆向时的分析思路，以及 AI 大模型在真实场景里的折腾记录。
-      </p>
-      <p>
-        我希望这里不是“只给结论”的地方，而是能把推理过程、踩坑细节和修正路径都留下来。技术本身已经够硬了，表达可以稍微温和一点。
-      </p>
-      <p>
-        如果你也在做类似方向，希望这些文章能帮你更快定位问题，也更有耐心把一个系统真正看懂。
-      </p>
+      {siteConfig.author.aboutParagraphs.map((paragraph) => <p>{paragraph}</p>)}
     </div>
   </section>
 </BaseLayout>

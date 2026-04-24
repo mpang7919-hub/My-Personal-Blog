@@ -1,0 +1,31 @@
+---
+import PostCard from "./PostCard.astro";
+
+const { posts = [] } = Astro.props;
+---
+
+{
+  posts.length > 0 && (
+    <section class="related-posts">
+      <div class="related-head">
+        <p class="eyebrow">Related</p>
+        <h2>相关文章</h2>
+      </div>
+      <div class="grid">
+        {posts.map((post) => <PostCard post={post} />)}
+      </div>
+    </section>
+  )
+}
+
+<style>
+  .related-posts {
+    margin-top: 2rem;
+  }
+
+  .related-head h2 {
+    margin: 0.2rem 0 1rem;
+    font-size: 2rem;
+    letter-spacing: -0.05em;
+  }
+</style>

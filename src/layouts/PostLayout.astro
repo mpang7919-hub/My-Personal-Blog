@@ -1,9 +1,17 @@
 ---
 import BaseLayout from "./BaseLayout.astro";
+import RelatedPosts from "../components/RelatedPosts.astro";
 import TagList from "../components/TagList.astro";
+import { siteConfig } from "../lib/site";
 
-const { post, headings = [], nextPost = null, prevPost = null, readingMinutes = 1 } =
-  Astro.props;
+const {
+  post,
+  headings = [],
+  nextPost = null,
+  prevPost = null,
+  relatedPosts = [],
+  readingMinutes = 1,
+} = Astro.props;
 const formattedDate = post.data.pubDate.toLocaleDateString("zh-CN", {
   year: "numeric",
   month: "long",
@@ -34,11 +42,11 @@ const articleJsonLd = {
   keywords: post.data.tags,
   author: {
     "@type": "Person",
-    name: "鸣",
+    name: siteConfig.author.name,
   },
   publisher: {
     "@type": "Organization",
-    name: "鸣的技术手记",
+    name: siteConfig.title,
     logo: {
       "@type": "ImageObject",
       url: socialImageUrl,
@@ -72,7 +80,7 @@ const breadcrumbJsonLd = {
 ---
 
 <BaseLayout
-  title={`${post.data.title} | 鸣的技术手记`}
+  title={`${post.data.title} | ${siteConfig.title}`}
   description={post.data.description}
   ogType="article"
   publishedTime={post.data.pubDate.toISOString()}
@@ -119,6 +127,8 @@ const breadcrumbJsonLd = {
           </nav>
         )
       }
+
+      <RelatedPosts posts={relatedPosts} />
     </article>
 
     {
