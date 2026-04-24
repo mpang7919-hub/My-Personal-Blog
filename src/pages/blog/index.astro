@@ -1,0 +1,35 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import PostCard from "../../components/PostCard.astro";
+import { getPublishedPosts } from "../../lib/posts";
+
+const posts = await getPublishedPosts();
+---
+
+<BaseLayout title="文章 | 鸣的技术手记" description="全部博客文章。">
+  <section class="container page-section list-page">
+    <div class="intro-card">
+      <p class="eyebrow">Blog</p>
+      <h1 class="page-title">全部文章</h1>
+      <p class="lede">围绕爬虫、逆向和大模型写的实战笔记，按时间倒序排列。</p>
+    </div>
+    <div class="grid">
+      {posts.map((post) => <PostCard post={post} />)}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .list-page {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .intro-card {
+    border: 1px solid var(--line);
+    border-radius: 32px;
+    padding: 1.5rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+</style>

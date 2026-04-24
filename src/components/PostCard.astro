@@ -1,0 +1,96 @@
+---
+import { estimateReadingMinutes } from "../lib/posts";
+import TagList from "./TagList.astro";
+
+const { post } = Astro.props;
+const readingMinutes = estimateReadingMinutes(post.body);
+---
+
+<article class="post-card">
+  <div class="meta-row">
+    <p class="date">
+      <time datetime={post.data.pubDate.toISOString()}>
+        {post.data.pubDate.toLocaleDateString("zh-CN", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        })}
+      </time>
+    </p>
+    <span class="reading-time">{readingMinutes} 分钟</span>
+  </div>
+  <h2><a href={`/blog/${post.id}`}>{post.data.title}</a></h2>
+  <p class="desc">{post.data.description}</p>
+  <TagList tags={post.data.tags} />
+</article>
+
+<style>
+  .post-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 30px;
+    padding: 1.35rem;
+    background: linear-gradient(180deg, rgba(255, 250, 241, 0.9), rgba(255, 248, 238, 0.72));
+    box-shadow: var(--shadow);
+    transition:
+      transform 180ms ease,
+      box-shadow 180ms ease,
+      border-color 180ms ease;
+  }
+
+  .post-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), rgba(17, 28, 66, 0.5));
+  }
+
+  .post-card:hover {
+    border-color: rgba(141, 65, 24, 0.28);
+    transform: translateY(-3px);
+    box-shadow: 0 24px 70px rgba(40, 27, 16, 0.12);
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .date {
+    margin: 0;
+    color: var(--accent);
+    font-size: 0.9rem;
+    font-family: "Cascadia Code", Consolas, monospace;
+  }
+
+  .reading-time {
+    color: var(--muted);
+    font-size: 0.84rem;
+    font-family: "Cascadia Code", Consolas, monospace;
+  }
+
+  h2 {
+    margin: 0.45rem 0 0.5rem;
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    line-height: 1.12;
+  }
+
+  h2 a {
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  h2 a:hover {
+    color: var(--accent-dark);
+  }
+
+  .desc {
+    margin-bottom: 0;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+const links = [
+  { href: "/", label: "首页" },
+  { href: "/blog", label: "文章" },
+  { href: "/archive", label: "归档" },
+  { href: "/tags", label: "标签" },
+  { href: "/about", label: "关于" },
+];
+---
+
+<header class="site-header">
+  <nav class="container nav" aria-label="主导航">
+    <a class="brand" href="/">鸣的技术手记</a>
+    <div class="links">
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    border-bottom: 1px solid rgba(35, 31, 32, 0.08);
+    background: rgba(247, 240, 228, 0.86);
+    backdrop-filter: blur(18px);
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: 72px;
+  }
+
+  .brand {
+    color: var(--ink);
+    font-size: 1.12rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.35rem 0.9rem;
+  }
+
+  .links a {
+    color: var(--muted);
+    font-size: 0.95rem;
+    text-decoration: none;
+  }
+
+  .links a:hover {
+    color: var(--accent);
+  }
+
+  @media (max-width: 680px) {
+    .nav {
+      align-items: flex-start;
+      flex-direction: column;
+      padding-block: 1rem;
+    }
+
+    .links {
+      justify-content: flex-start;
+    }
+  }
+</style>

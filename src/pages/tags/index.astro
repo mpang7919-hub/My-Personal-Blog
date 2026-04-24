@@ -1,0 +1,85 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getAllTags, getPublishedPosts } from "../../lib/posts";
+
+const tags = await getAllTags();
+const posts = await getPublishedPosts();
+const counts = new Map();
+
+for (const post of posts) {
+  for (const tag of post.data.tags) {
+    counts.set(tag, (counts.get(tag) ?? 0) + 1);
+  }
+}
+---
+
+<BaseLayout title="标签 | 鸣的技术手记" description="按标签浏览文章。">
+  <section class="container page-section tags-page">
+    <div class="intro-card">
+      <p class="eyebrow">Tags</p>
+      <h1 class="page-title">标签</h1>
+      <p class="lede">从主题切入，快速找到同一类问题下的文章。</p>
+    </div>
+    <div class="tag-cloud">
+      {
+        tags.map((tag) => (
+          <a class="tag-pill" href={`/tags/${encodeURIComponent(tag)}`}>
+            <span>#{tag}</span>
+            <strong>{counts.get(tag)}</strong>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .tags-page {
+    display: grid;
+    gap: 1.4rem;
+  }
+
+  .intro-card {
+    border: 1px solid var(--line);
+    border-radius: 32px;
+    padding: 1.5rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.7rem 0.95rem;
+    background: var(--panel-strong);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .tag-pill strong {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 1.8rem;
+    border-radius: 999px;
+    padding: 0.15rem 0.45rem;
+    background: var(--accent-soft);
+    color: var(--accent-dark);
+    font-size: 0.82rem;
+  }
+
+  .tag-pill:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+</style>

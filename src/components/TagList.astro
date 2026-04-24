@@ -1,0 +1,24 @@
+---
+const { tags = [] } = Astro.props;
+---
+
+{
+  tags.length > 0 && (
+    <div class="tag-list" aria-label="文章标签">
+      {tags.map((tag) => (
+        <a class="tag" href={`/tags/${encodeURIComponent(tag)}`}>
+          #{tag}
+        </a>
+      ))}
+    </div>
+  )
+}
+
+<style>
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-top: 1rem;
+  }
+</style>

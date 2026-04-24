@@ -1,0 +1,38 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="关于鸣 | 鸣的技术手记" description="关于鸣，以及这个博客会写什么。">
+  <section class="container page-section about">
+    <p class="eyebrow">About</p>
+    <h1 class="page-title">关于鸣</h1>
+    <p class="lede">
+      鸣是一个喜欢钻细节的人，平时常在脚本、请求链路、混淆代码和模型实验里来回穿梭。遇到问题时，习惯先把现象拆开，再一点点把原因钉实。
+    </p>
+    <div class="panel">
+      <p>
+        这个博客主要写三类内容：Python 爬虫的工程实践、JS 逆向时的分析思路，以及 AI 大模型在真实场景里的折腾记录。
+      </p>
+      <p>
+        我希望这里不是“只给结论”的地方，而是能把推理过程、踩坑细节和修正路径都留下来。技术本身已经够硬了，表达可以稍微温和一点。
+      </p>
+      <p>
+        如果你也在做类似方向，希望这些文章能帮你更快定位问题，也更有耐心把一个系统真正看懂。
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 820px;
+  }
+
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 1.5rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+</style>

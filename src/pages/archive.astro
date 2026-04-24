@@ -1,0 +1,98 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getPublishedPosts } from "../lib/posts";
+
+const posts = await getPublishedPosts();
+const groups = posts.reduce((acc, post) => {
+  const year = post.data.pubDate.getFullYear();
+  acc.set(year, [...(acc.get(year) ?? []), post]);
+  return acc;
+}, new Map());
+---
+
+<BaseLayout title="归档 | 鸣的技术手记" description="按年份归档的文章列表。">
+  <section class="container page-section archive">
+    <div class="intro-card">
+      <p class="eyebrow">Archive</p>
+      <h1 class="page-title">归档</h1>
+      <p class="lede">按年份回看已经写过的内容，方便追踪主题和阶段变化。</p>
+    </div>
+    {[...groups.entries()].map(([year, items]) => (
+      <section class="year-group">
+        <h2>{year}</h2>
+        <ol>
+          {items.map((post) => (
+            <li>
+              <time datetime={post.data.pubDate.toISOString()}>
+                {post.data.pubDate.toLocaleDateString("zh-CN", {
+                  month: "2-digit",
+                  day: "2-digit",
+                })}
+              </time>
+              <a href={`/blog/${post.id}`}>{post.data.title}</a>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))}
+  </section>
+</BaseLayout>
+
+<style>
+  .archive {
+    max-width: 900px;
+  }
+
+  .intro-card {
+    margin-bottom: 1.4rem;
+    border: 1px solid var(--line);
+    border-radius: 32px;
+    padding: 1.5rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .year-group {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 1.4rem;
+    background: var(--panel-strong);
+    box-shadow: var(--shadow);
+  }
+
+  .year-group + .year-group {
+    margin-top: 1rem;
+  }
+
+  h2 {
+    margin: 0 0 0.8rem;
+    font-size: 2rem;
+    letter-spacing: -0.04em;
+  }
+
+  ol {
+    display: grid;
+    gap: 0.8rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: flex;
+    gap: 1rem;
+    padding-top: 0.8rem;
+    border-top: 1px dashed var(--line);
+  }
+
+  li:first-child {
+    padding-top: 0;
+    border-top: 0;
+  }
+
+  time {
+    min-width: 4rem;
+    color: var(--muted);
+    font-family: "Cascadia Code", Consolas, monospace;
+  }
+</style>

@@ -1,0 +1,240 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import TagList from "../components/TagList.astro";
+
+const { post, headings = [], nextPost = null, prevPost = null, readingMinutes = 1 } =
+  Astro.props;
+const formattedDate = post.data.pubDate.toLocaleDateString("zh-CN", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+const tocItems = headings.filter((heading) => heading.depth <= 2);
+---
+
+<BaseLayout title={`${post.data.title} | 鸣的技术手记`} description={post.data.description}>
+  <div class="container post-shell">
+    <article class="post">
+      <p class="eyebrow">Article</p>
+      <h1>{post.data.title}</h1>
+      <p class="summary">{post.data.description}</p>
+      <div class="meta">
+        <time datetime={post.data.pubDate.toISOString()}>{formattedDate}</time>
+        <span>{readingMinutes} 分钟阅读</span>
+        {
+          post.data.updatedDate && (
+            <span>更新于 {post.data.updatedDate.toLocaleDateString("zh-CN")}</span>
+          )
+        }
+      </div>
+      <TagList tags={post.data.tags} />
+      <div class="content">
+        <slot />
+      </div>
+
+      {
+        (prevPost || nextPost) && (
+          <nav class="post-nav" aria-label="文章导航">
+            {prevPost ? (
+              <a class="nav-card" href={`/blog/${prevPost.id}`}>
+                <span class="nav-label">上一篇</span>
+                <strong>{prevPost.data.title}</strong>
+              </a>
+            ) : (
+              <div />
+            )}
+            {nextPost && (
+              <a class="nav-card align-right" href={`/blog/${nextPost.id}`}>
+                <span class="nav-label">下一篇</span>
+                <strong>{nextPost.data.title}</strong>
+              </a>
+            )}
+          </nav>
+        )
+      }
+    </article>
+
+    {
+      tocItems.length > 0 && (
+        <aside class="toc">
+          <p class="toc-title">本页目录</p>
+          <nav aria-label="文章目录">
+            <ol>
+              {tocItems.map((heading) => (
+                <li>
+                  <a href={`#${heading.slug}`}>{heading.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        </aside>
+      )
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .post-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 240px;
+    gap: 2rem;
+    align-items: start;
+    padding-block: 4rem;
+  }
+
+  .post {
+    min-width: 0;
+  }
+
+  h1 {
+    margin: 0.4rem 0 1rem;
+    font-size: clamp(2.7rem, 8vw, 5.4rem);
+    line-height: 0.96;
+    letter-spacing: -0.08em;
+  }
+
+  .summary {
+    color: var(--muted);
+    font-size: 1.22rem;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+    font-family: "Cascadia Code", Consolas, monospace;
+  }
+
+  .content {
+    margin-top: 2.4rem;
+    border-top: 1px solid var(--line);
+    padding-top: 2rem;
+    font-size: 1.08rem;
+  }
+
+  .content :global(h2) {
+    margin-top: 2.5rem;
+    margin-bottom: 0.8rem;
+    font-size: 1.9rem;
+    line-height: 1.16;
+    letter-spacing: -0.04em;
+    scroll-margin-top: 6rem;
+  }
+
+  .content :global(h3) {
+    margin-top: 1.8rem;
+    margin-bottom: 0.6rem;
+    font-size: 1.28rem;
+    scroll-margin-top: 6rem;
+  }
+
+  .content :global(p),
+  .content :global(ul),
+  .content :global(ol) {
+    color: #2b2724;
+  }
+
+  .content :global(blockquote) {
+    margin-inline: 0;
+    border-left: 4px solid var(--accent);
+    padding: 0.25rem 0 0.25rem 1rem;
+    color: var(--muted);
+    background: rgba(255, 250, 241, 0.45);
+  }
+
+  .post-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--line);
+  }
+
+  .nav-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 1rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .nav-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+  }
+
+  .align-right {
+    text-align: right;
+  }
+
+  .nav-label {
+    color: var(--muted);
+    font-size: 0.85rem;
+    font-family: "Cascadia Code", Consolas, monospace;
+  }
+
+  .toc {
+    position: sticky;
+    top: 96px;
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 1rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .toc-title {
+    margin: 0 0 0.75rem;
+    color: var(--accent);
+    font-family: "Cascadia Code", Consolas, monospace;
+    font-size: 0.88rem;
+    text-transform: uppercase;
+  }
+
+  .toc ol {
+    display: grid;
+    gap: 0.55rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .toc a {
+    color: var(--muted);
+    text-decoration: none;
+  }
+
+  .toc a:hover {
+    color: var(--accent-dark);
+  }
+
+  @media (max-width: 980px) {
+    .post-shell {
+      grid-template-columns: 1fr;
+    }
+
+    .toc {
+      position: static;
+      order: -1;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .post-nav {
+      grid-template-columns: 1fr;
+    }
+
+    .align-right {
+      text-align: left;
+    }
+  }
+</style>
