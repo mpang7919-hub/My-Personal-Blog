@@ -18,7 +18,11 @@ const posts = (await getPublishedPosts()).filter((post) =>
 );
 ---
 
-<BaseLayout title={`#${tag} | 鸣的技术手记`} description={`标签 ${tag} 下的文章。`}>
+<BaseLayout
+  title={`#${tag} | 鸣的技术手记`}
+  description={`标签 ${tag} 下的文章。`}
+  keywords={[tag, "标签归档", "技术博客"]}
+>
   <section class="container page-section tag-page">
     <div class="intro-card">
       <p class="eyebrow">Tag</p>

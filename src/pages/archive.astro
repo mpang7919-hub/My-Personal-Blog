@@ -10,7 +10,11 @@ const groups = posts.reduce((acc, post) => {
 }, new Map());
 ---
 
-<BaseLayout title="归档 | 鸣的技术手记" description="按年份归档的文章列表。">
+<BaseLayout
+  title="归档 | 鸣的技术手记"
+  description="按年份归档的文章列表。"
+  keywords={["归档页", "时间线", "技术博客"]}
+>
   <section class="container page-section archive">
     <div class="intro-card">
       <p class="eyebrow">Archive</p>

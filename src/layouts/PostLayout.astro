@@ -10,9 +10,48 @@ const formattedDate = post.data.pubDate.toLocaleDateString("zh-CN", {
   day: "numeric",
 });
 const tocItems = headings.filter((heading) => heading.depth <= 2);
+const canonicalUrl = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).toString()
+  : Astro.url.toString();
+const socialImageUrl = Astro.site
+  ? new URL("/og-image.svg", Astro.site).toString()
+  : new URL("/og-image.svg", Astro.url.origin).toString();
+const articleJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: post.data.pubDate.toISOString(),
+  dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
+  inLanguage: "zh-CN",
+  url: canonicalUrl,
+  mainEntityOfPage: canonicalUrl,
+  image: [socialImageUrl],
+  keywords: post.data.tags,
+  author: {
+    "@type": "Person",
+    name: "鸣",
+  },
+  publisher: {
+    "@type": "Organization",
+    name: "鸣的技术手记",
+    logo: {
+      "@type": "ImageObject",
+      url: socialImageUrl,
+    },
+  },
+};
 ---
 
-<BaseLayout title={`${post.data.title} | 鸣的技术手记`} description={post.data.description}>
+<BaseLayout
+  title={`${post.data.title} | 鸣的技术手记`}
+  description={post.data.description}
+  ogType="article"
+  publishedTime={post.data.pubDate.toISOString()}
+  modifiedTime={(post.data.updatedDate ?? post.data.pubDate).toISOString()}
+  keywords={post.data.tags}
+  structuredData={articleJsonLd}
+>
   <div class="container post-shell">
     <article class="post">
       <p class="eyebrow">Article</p>

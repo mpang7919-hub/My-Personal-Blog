@@ -6,14 +6,26 @@ import "../styles/global.css";
 const {
   title = "鸣的技术手记",
   description = "记录 Python 爬虫、JS 逆向和 AI 大模型实践的个人博客。",
+  ogType = "website",
+  socialImage = "/og-image.svg",
+  publishedTime,
+  modifiedTime,
+  keywords = [],
+  structuredData = [],
 } = Astro.props;
 
 const canonicalUrl = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).toString()
   : Astro.url.toString();
 const socialImageUrl = Astro.site
-  ? new URL("/og-image.svg", Astro.site).toString()
-  : `${Astro.url.origin}/og-image.svg`;
+  ? new URL(socialImage, Astro.site).toString()
+  : new URL(socialImage, Astro.url.origin).toString();
+const keywordsContent = Array.isArray(keywords) ? keywords.join(", ") : keywords;
+const structuredDataItems = Array.isArray(structuredData)
+  ? structuredData
+  : structuredData
+    ? [structuredData]
+    : [];
 ---
 
 <!doctype html>
@@ -24,12 +36,17 @@ const socialImageUrl = Astro.site
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="theme-color" content="#d36a2e" />
+    {keywordsContent && <meta name="keywords" content={keywordsContent} />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content="鸣的技术手记" />
+    <meta property="og:locale" content="zh_CN" />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:image" content={socialImageUrl} />
     <meta property="og:image:alt" content="鸣的技术手记分享图" />
+    {publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
@@ -37,6 +54,11 @@ const socialImageUrl = Astro.site
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" type="application/rss+xml" title="鸣的技术手记 RSS" href="/rss.xml" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {
+      structuredDataItems.map((item) => (
+        <script type="application/ld+json" set:html={JSON.stringify(item)} />
+      ))
+    }
     <title>{title}</title>
   </head>
   <body>
