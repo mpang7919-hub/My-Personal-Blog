@@ -1,0 +1,172 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getSiteSettingsMap } from "../../db/repositories/site-settings";
+import { requireUser } from "../../lib/auth";
+import { siteConfig } from "../../lib/site";
+
+export const prerender = false;
+
+const user = await requireUser(Astro);
+
+if (user instanceof Response) {
+  return user;
+}
+
+const settings = await getSiteSettingsMap();
+const message = Astro.url.searchParams.get("message");
+const messageText = message === "saved" ? "站点设置已保存。" : "";
+---
+
+<BaseLayout title={`站点设置 | ${siteConfig.title}`} description="后台站点设置。">
+  <section class="container settings-page">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Settings</p>
+        <h1>站点设置</h1>
+        <p class="lede">可以先从标题、描述和作者信息开始，后面再逐步扩展成更完整的站点配置面板。</p>
+      </div>
+      <a class="ghost" href="/admin">返回后台</a>
+    </div>
+
+    {messageText && <p class="notice">{messageText}</p>}
+
+    <section class="panel">
+      <form action="/api/admin/settings" method="POST" class="settings-form">
+        <label>
+          <span>站点标题</span>
+          <input
+            type="text"
+            name="siteTitle"
+            value={settings.siteTitle ?? siteConfig.title}
+            required
+          />
+        </label>
+        <label>
+          <span>站点描述</span>
+          <textarea
+            name="siteDescription"
+            rows="3"
+            required
+          >{settings.siteDescription ?? siteConfig.description}</textarea>
+        </label>
+        <label>
+          <span>作者名</span>
+          <input
+            type="text"
+            name="authorName"
+            value={settings.authorName ?? siteConfig.author.name}
+            required
+          />
+        </label>
+        <label>
+          <span>作者简介</span>
+          <textarea
+            name="authorBio"
+            rows="4"
+            required
+          >{settings.authorBio ?? siteConfig.author.shortBio}</textarea>
+        </label>
+        <button type="submit">保存设置</button>
+      </form>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .settings-page {
+    display: grid;
+    gap: 1.4rem;
+    padding-block: 3rem;
+  }
+
+  .page-head,
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .page-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    margin: 0.25rem 0 0.8rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    letter-spacing: -0.06em;
+  }
+
+  .ghost {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.78rem 1rem;
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .notice {
+    margin: 0;
+    border: 1px solid rgba(67, 120, 84, 0.22);
+    border-radius: 18px;
+    padding: 0.9rem 1rem;
+    background: rgba(67, 120, 84, 0.08);
+    color: #2d5b39;
+  }
+
+  .panel {
+    padding: 1.5rem;
+  }
+
+  .settings-form {
+    display: grid;
+    gap: 1rem;
+  }
+
+  label {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  label span {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  input,
+  textarea {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.88rem 1.15rem;
+    background: var(--ink);
+    color: var(--panel-strong);
+    font: inherit;
+    cursor: pointer;
+    justify-self: start;
+  }
+
+  button:hover {
+    background: var(--accent-dark);
+  }
+
+  @media (max-width: 860px) {
+    .page-head {
+      flex-direction: column;
+    }
+  }
+</style>

@@ -1,10 +1,14 @@
-import { c as createComponent } from './astro-component_BbPdZ0Bf.mjs';
+import { c as createComponent } from './astro-component_DBexCIw6.mjs';
 import 'piccolore';
-import { m as maybeRenderHead, h as addAttribute, r as renderTemplate, u as unescapeHTML, n as renderHead, l as renderComponent, o as renderSlot } from './entrypoint_CMMalCOc.mjs';
+import { m as maybeRenderHead, h as addAttribute, r as renderTemplate, u as unescapeHTML, n as renderHead, l as renderComponent, o as renderSlot } from './entrypoint_tEg_fpUW.mjs';
 import 'clsx';
 
 const siteConfig = {
   title: "鸣的技术手记",
+  description: "记录 Python 爬虫、JS 逆向和 AI 大模型实践的个人博客。",
+  author: {
+    name: "鸣",
+    shortBio: "长期记录 Python 爬虫、JS 逆向和 AI 大模型实践的技术作者。"},
   navigation: [
     { href: "/", label: "首页" },
     { href: "/blog", label: "文章" },

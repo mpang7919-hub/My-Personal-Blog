@@ -200,4 +200,4 @@ async function requireUser(context) {
   return user;
 }
 
-export { postsTable as a, getCurrentUser as b, createUserSession as c, getDb as g, logoutCurrentUser as l, postTagsTable as p, requireUser as r, tagsTable as t, usersTable as u, verifyPassword as v };
+export { postsTable as a, getCurrentUser as b, createUserSession as c, getDb as g, logoutCurrentUser as l, postTagsTable as p, requireUser as r, siteSettingsTable as s, tagsTable as t, usersTable as u, verifyPassword as v };

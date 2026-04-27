@@ -1,5 +1,5 @@
-import { c as createAdminPost } from './posts_Blnq3YV4.mjs';
-import { r as requireUser } from './auth_CGONaJsX.mjs';
+import { u as updateAdminPost } from './posts_QZOXX6I9.mjs';
+import { r as requireUser } from './auth_B_88mTGx.mjs';
 
 const prerender = false;
 function parseTagNames(raw) {
@@ -9,6 +9,10 @@ const POST = async (context) => {
   const user = await requireUser(context);
   if (user instanceof Response) {
     return user;
+  }
+  const postId = Number(context.params.id);
+  if (!Number.isFinite(postId)) {
+    return context.redirect("/admin/posts");
   }
   const formData = await context.request.formData();
   const title = String(formData.get("title") ?? "").trim();
@@ -22,9 +26,9 @@ const POST = async (context) => {
   const featured = formData.get("featured") === "true";
   const tagNames = parseTagNames(String(formData.get("tags") ?? ""));
   if (!title || !description || !content) {
-    return context.redirect("/admin/posts/new");
+    return context.redirect(`/admin/posts/${postId}`);
   }
-  const post = await createAdminPost({
+  await updateAdminPost(postId, {
     slug,
     title,
     description,
@@ -37,7 +41,7 @@ const POST = async (context) => {
     tagNames,
     authorId: user.id
   });
-  return context.redirect(`/admin/posts/${post.id}?message=created`);
+  return context.redirect(`/admin/posts/${postId}?message=updated`);
 };
 
 const _page = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({

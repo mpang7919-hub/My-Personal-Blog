@@ -1,5 +1,5 @@
-import { d as deleteAdminPost } from './posts_Blnq3YV4.mjs';
-import { r as requireUser } from './auth_CGONaJsX.mjs';
+import { d as deleteAdminPost } from './posts_QZOXX6I9.mjs';
+import { r as requireUser } from './auth_B_88mTGx.mjs';
 
 const prerender = false;
 const POST = async (context) => {
