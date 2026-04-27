@@ -25,9 +25,15 @@ npm run build
 
 ```md
 ---
+slug: "article-slug"
 title: "文章标题"
 description: "文章摘要"
+seoTitle: "SEO 标题"
+seoDescription: "SEO 摘要"
 pubDate: "2026-04-24"
+authorName: "鸣"
+status: "published"
+featured: false
 tags: ["标签1", "标签2"]
 draft: false
 ---
@@ -50,6 +56,85 @@ draft: false
 - Vercel：二选一
   - 手动添加环境变量 `SITE_URL`
   - 或启用 Vercel 的 `Automatically expose System Environment Variables`，项目会自动读取 `VERCEL_PROJECT_PRODUCTION_URL`
+
+## 内容源配置
+
+项目目前默认使用本地 MDX 文件作为内容源：
+
+```bash
+CONTENT_SOURCE=file
+```
+
+为了给后续“登录 + 数据库 + 在线编辑”做准备，项目里已经预留了内容源切换入口：
+
+- `file`：当前使用的本地 MDX
+- `database`：未来数据库内容源的占位入口
+
+当你准备接数据库时，可以先在环境变量里切换：
+
+```bash
+CONTENT_SOURCE=database
+DATABASE_URL=your-database-url
+```
+
+然后把数据库适配器补到 `src/lib/blog-source.ts`。
+
+## MySQL 初始化
+
+项目已经内置了 MySQL + Drizzle ORM 骨架。
+
+1. 在 `.env.local` 里配置：
+
+```bash
+DATABASE_URL=mysql://user:password@127.0.0.1:3306/personal_blog
+ADMIN_EMAIL=admin@example.com
+ADMIN_DISPLAY_NAME=鸣
+ADMIN_PASSWORD=your-admin-password
+ADMIN_PASSWORD_HASH=CHANGE_ME_BEFORE_PRODUCTION
+```
+
+2. 推送表结构到 MySQL：
+
+```bash
+npm run db:push
+```
+
+3. 把当前 MDX 文章同步到 MySQL：
+
+```bash
+npm run db:seed:file
+```
+
+当前阶段数据库主要用于为后续“登录 + 在线编辑”做准备，站点默认仍走文件内容源。
+
+## 最小登录后台
+
+项目已经具备最小登录能力：
+
+- 登录页：`/login`
+- 后台页：`/admin`
+- 登录接口：`/api/login`
+- 退出接口：`/api/logout`
+
+推荐初始化流程：
+
+```bash
+npm run db:push
+npm run db:seed:file
+```
+
+如果你希望重设管理员密码，可以在 `.env.local` 里配置：
+
+```bash
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=your-new-password
+```
+
+然后执行：
+
+```bash
+npm run db:set-admin-password
+```
 
 ## 参考
 

@@ -2,8 +2,27 @@
 import BaseLayout from "./BaseLayout.astro";
 import RelatedPosts from "../components/RelatedPosts.astro";
 import TagList from "../components/TagList.astro";
+import {
+  getPostDescription,
+  getPostSlug,
+  getPostTitle,
+} from "../lib/posts";
 import { siteConfig } from "../lib/site";
 
+type TocHeading = {
+  depth: number;
+  slug: string;
+  text: string;
+};
+
+const props = Astro.props as {
+  post: import("../lib/posts").BlogPost;
+  headings?: TocHeading[];
+  nextPost?: import("../lib/posts").BlogPost | null;
+  prevPost?: import("../lib/posts").BlogPost | null;
+  relatedPosts?: import("../lib/posts").BlogPost[];
+  readingMinutes?: number;
+};
 const {
   post,
   headings = [],
@@ -11,13 +30,13 @@ const {
   prevPost = null,
   relatedPosts = [],
   readingMinutes = 1,
-} = Astro.props;
+} = props;
 const formattedDate = post.data.pubDate.toLocaleDateString("zh-CN", {
   year: "numeric",
   month: "long",
   day: "numeric",
 });
-const tocItems = headings.filter((heading) => heading.depth <= 2);
+const tocItems = headings.filter((heading: TocHeading) => heading.depth <= 2);
 const canonicalUrl = Astro.site
   ? new URL(Astro.url.pathname, Astro.site).toString()
   : Astro.url.toString();
@@ -31,8 +50,8 @@ const socialImageUrl = Astro.site
 const articleJsonLd = {
   "@context": "https://schema.org",
   "@type": "BlogPosting",
-  headline: post.data.title,
-  description: post.data.description,
+  headline: getPostTitle(post, true),
+  description: getPostDescription(post, true),
   datePublished: post.data.pubDate.toISOString(),
   dateModified: (post.data.updatedDate ?? post.data.pubDate).toISOString(),
   inLanguage: "zh-CN",
@@ -42,7 +61,7 @@ const articleJsonLd = {
   keywords: post.data.tags,
   author: {
     "@type": "Person",
-    name: siteConfig.author.name,
+    name: post.data.authorName || siteConfig.author.name,
   },
   publisher: {
     "@type": "Organization",
@@ -72,7 +91,7 @@ const breadcrumbJsonLd = {
     {
       "@type": "ListItem",
       position: 3,
-      name: post.data.title,
+      name: getPostTitle(post),
       item: canonicalUrl,
     },
   ],
@@ -80,8 +99,8 @@ const breadcrumbJsonLd = {
 ---
 
 <BaseLayout
-  title={`${post.data.title} | ${siteConfig.title}`}
-  description={post.data.description}
+  title={`${getPostTitle(post, true)} | ${siteConfig.title}`}
+  description={getPostDescription(post, true)}
   ogType="article"
   publishedTime={post.data.pubDate.toISOString()}
   modifiedTime={(post.data.updatedDate ?? post.data.pubDate).toISOString()}
@@ -111,7 +130,7 @@ const breadcrumbJsonLd = {
         (prevPost || nextPost) && (
           <nav class="post-nav" aria-label="文章导航">
             {prevPost ? (
-              <a class="nav-card" href={`/blog/${prevPost.id}`}>
+              <a class="nav-card" href={`/blog/${getPostSlug(prevPost)}`}>
                 <span class="nav-label">上一篇</span>
                 <strong>{prevPost.data.title}</strong>
               </a>
@@ -119,7 +138,7 @@ const breadcrumbJsonLd = {
               <div />
             )}
             {nextPost && (
-              <a class="nav-card align-right" href={`/blog/${nextPost.id}`}>
+              <a class="nav-card align-right" href={`/blog/${getPostSlug(nextPost)}`}>
                 <span class="nav-label">下一篇</span>
                 <strong>{nextPost.data.title}</strong>
               </a>
@@ -137,7 +156,7 @@ const breadcrumbJsonLd = {
           <p class="toc-title">本页目录</p>
           <nav aria-label="文章目录">
             <ol>
-              {tocItems.map((heading) => (
+              {tocItems.map((heading: TocHeading) => (
                 <li>
                   <a href={`#${heading.slug}`}>{heading.text}</a>
                 </li>

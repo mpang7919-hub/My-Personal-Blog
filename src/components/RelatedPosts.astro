@@ -1,7 +1,8 @@
 ---
+import type { BlogPost } from "../lib/posts";
 import PostCard from "./PostCard.astro";
 
-const { posts = [] } = Astro.props;
+const { posts = [] }: { posts?: BlogPost[] } = Astro.props;
 ---
 
 {

@@ -56,7 +56,7 @@ const structuredDataItems = Array.isArray(structuredData)
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     {
       structuredDataItems.map((item) => (
-        <script type="application/ld+json" set:html={JSON.stringify(item)} />
+        <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />
       ))
     }
     <title>{title}</title>

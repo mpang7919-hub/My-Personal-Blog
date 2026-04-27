@@ -1,0 +1,232 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { listAdminPostRows } from "../../db/repositories/posts";
+import { requireUser } from "../../lib/auth";
+import { siteConfig } from "../../lib/site";
+
+export const prerender = false;
+
+const user = await requireUser(Astro);
+
+if (user instanceof Response) {
+  return user;
+}
+
+const posts = await listAdminPostRows();
+const publishedCount = posts.filter((post) => post.status === "published").length;
+const draftCount = posts.filter((post) => post.status === "draft").length;
+const message = Astro.url.searchParams.get("message");
+const messageText =
+  message === "created"
+    ? "文章已创建。"
+    : message === "updated"
+      ? "文章已更新。"
+      : message === "deleted"
+        ? "文章已删除。"
+        : "";
+---
+
+<BaseLayout title={`后台 | ${siteConfig.title}`} description="博客后台管理。">
+  <section class="container admin-page">
+    <div class="admin-head">
+      <div>
+        <p class="eyebrow">Dashboard</p>
+        <h1>后台概览</h1>
+        <p class="lede">
+          当前登录用户：{user.displayName}。这一步先打通账号、会话和数据库，下一步再接网页编辑器。
+        </p>
+      </div>
+      <form action="/api/logout" method="POST">
+        <button type="submit">退出登录</button>
+      </form>
+    </div>
+
+    {messageText && <p class="notice">{messageText}</p>}
+
+    <div class="stats">
+      <article>
+        <span>内容源</span>
+        <strong>{process.env.CONTENT_SOURCE ?? "file"}</strong>
+      </article>
+      <article>
+        <span>已发布文章</span>
+        <strong>{publishedCount}</strong>
+      </article>
+      <article>
+        <span>草稿文章</span>
+        <strong>{draftCount}</strong>
+      </article>
+    </div>
+
+    <section class="posts-panel">
+      <div class="panel-head">
+        <div>
+          <h2>数据库中的文章</h2>
+          <p>现在已经可以进入文章管理，下一步会继续补更完整的编辑体验。</p>
+        </div>
+        <a class="create-link" href="/admin/posts">进入文章管理</a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>标题</th>
+              <th>Slug</th>
+              <th>状态</th>
+              <th>发布时间</th>
+            </tr>
+          </thead>
+          <tbody>
+            {posts.map((post) => (
+              <tr>
+                <td>
+                  <a href={`/admin/posts/${post.id}`}>{post.title}</a>
+                </td>
+                <td>{post.slug}</td>
+                <td>{post.status}</td>
+                <td>
+                  {post.publishedAt
+                    ? post.publishedAt.toLocaleDateString("zh-CN")
+                    : "未发布"}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .admin-page {
+    display: grid;
+    gap: 1.4rem;
+    padding-block: 3rem;
+  }
+
+  .admin-head,
+  .posts-panel,
+  .stats article {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .admin-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    margin: 0.25rem 0 0.8rem;
+    font-size: clamp(2rem, 6vw, 3.4rem);
+    letter-spacing: -0.06em;
+  }
+
+  .admin-head button {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.78rem 1rem;
+    background: var(--ink);
+    color: var(--panel-strong);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  .notice {
+    margin: 0;
+    border: 1px solid rgba(67, 120, 84, 0.22);
+    border-radius: 18px;
+    padding: 0.9rem 1rem;
+    background: rgba(67, 120, 84, 0.08);
+    color: #2d5b39;
+  }
+
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .stats article {
+    padding: 1.2rem;
+  }
+
+  .stats span {
+    display: block;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .stats strong {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 1.3rem;
+  }
+
+  .posts-panel {
+    padding: 1.5rem;
+  }
+
+  .panel-head h2 {
+    margin: 0 0 0.35rem;
+    font-size: 1.8rem;
+    letter-spacing: -0.04em;
+  }
+
+  .panel-head p {
+    margin: 0 0 1rem;
+    color: var(--muted);
+  }
+
+  .panel-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .create-link {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 255, 255, 0.65);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.9rem 0.75rem;
+    border-top: 1px dashed var(--line);
+    text-align: left;
+  }
+
+  @media (max-width: 860px) {
+    .admin-head {
+      flex-direction: column;
+    }
+
+    .stats {
+      grid-template-columns: 1fr;
+    }
+
+    .panel-head {
+      flex-direction: column;
+    }
+  }
+</style>

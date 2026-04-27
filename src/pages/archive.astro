@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { getGroupedPostsByYear } from "../lib/posts";
+import { getGroupedPostsByYear, getPostSlug } from "../lib/posts";
 import { siteConfig } from "../lib/site";
 
 const groups = await getGroupedPostsByYear();
@@ -29,7 +29,7 @@ const groups = await getGroupedPostsByYear();
                   day: "2-digit",
                 })}
               </time>
-              <a href={`/blog/${post.id}`}>{post.data.title}</a>
+              <a href={`/blog/${getPostSlug(post)}`}>{post.data.title}</a>
             </li>
           ))}
         </ol>

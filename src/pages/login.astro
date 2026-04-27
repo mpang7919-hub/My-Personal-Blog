@@ -1,0 +1,115 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { getCurrentUser } from "../lib/auth";
+import { siteConfig } from "../lib/site";
+
+export const prerender = false;
+
+const user = await getCurrentUser(Astro.cookies);
+
+if (user) {
+  return Astro.redirect("/admin");
+}
+
+const error = Astro.url.searchParams.get("error");
+const errorMessage =
+  error === "invalid"
+    ? "邮箱或密码不正确。"
+    : error === "missing"
+      ? "请填写邮箱和密码。"
+      : "";
+---
+
+<BaseLayout title={`登录 | ${siteConfig.title}`} description="登录博客后台。">
+  <section class="container login-page">
+    <div class="login-card">
+      <p class="eyebrow">Admin Access</p>
+      <h1>登录后台</h1>
+      <p class="lede">先完成最小登录，后面再继续扩展在线编辑器和发布流程。</p>
+      {errorMessage && <p class="error">{errorMessage}</p>}
+      <form action="/api/login" method="POST" class="login-form">
+        <label>
+          <span>邮箱</span>
+          <input type="email" name="email" placeholder="admin@example.com" required />
+        </label>
+        <label>
+          <span>密码</span>
+          <input type="password" name="password" placeholder="请输入密码" required />
+        </label>
+        <button type="submit">登录</button>
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .login-page {
+    display: grid;
+    place-items: center;
+    min-height: calc(100vh - 180px);
+    padding-block: 3rem;
+  }
+
+  .login-card {
+    width: min(100%, 480px);
+    border: 1px solid var(--line);
+    border-radius: 32px;
+    padding: 1.6rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  h1 {
+    margin: 0.25rem 0 0.8rem;
+    font-size: clamp(2rem, 6vw, 3.1rem);
+    letter-spacing: -0.06em;
+  }
+
+  .error {
+    border: 1px solid rgba(141, 65, 24, 0.24);
+    border-radius: 18px;
+    padding: 0.75rem 0.9rem;
+    background: rgba(211, 106, 46, 0.08);
+    color: var(--accent-dark);
+  }
+
+  .login-form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+
+  label {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  label span {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  input {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.88rem 1.1rem;
+    background: var(--ink);
+    color: var(--panel-strong);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: var(--accent-dark);
+  }
+</style>

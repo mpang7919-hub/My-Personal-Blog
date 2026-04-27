@@ -1,0 +1,30 @@
+---
+import AdminPostForm from "../../../components/AdminPostForm.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { requireUser } from "../../../lib/auth";
+import { siteConfig } from "../../../lib/site";
+
+export const prerender = false;
+
+const user = await requireUser(Astro);
+
+if (user instanceof Response) {
+  return user;
+}
+---
+
+<BaseLayout title={`新建文章 | ${siteConfig.title}`} description="后台新建文章。">
+  <section class="container editor-page">
+    <AdminPostForm
+      action="/api/admin/posts"
+      title="新建文章"
+      submitLabel="创建文章"
+    />
+  </section>
+</BaseLayout>
+
+<style>
+  .editor-page {
+    padding-block: 3rem;
+  }
+</style>

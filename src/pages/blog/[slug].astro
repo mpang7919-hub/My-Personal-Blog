@@ -3,6 +3,7 @@ import { render } from "astro:content";
 import {
   estimateReadingMinutes,
   getAdjacentPosts,
+  getPostSlug,
   getPublishedPosts,
   getRelatedPosts,
 } from "../../lib/posts";
@@ -11,13 +12,13 @@ import PostLayout from "../../layouts/PostLayout.astro";
 export async function getStaticPaths() {
   const posts = await getPublishedPosts();
 
-  return posts.map((post, index) => ({
-    params: { slug: post.id },
+  return posts.map((post) => ({
+    params: { slug: getPostSlug(post) },
     props: {
       post,
       ...getAdjacentPosts(posts, post.id),
       relatedPosts: getRelatedPosts(posts, post.id, 2),
-      readingMinutes: estimateReadingMinutes(post.body),
+      readingMinutes: estimateReadingMinutes(post.body ?? ""),
     },
   }));
 }

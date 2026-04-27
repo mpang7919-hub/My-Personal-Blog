@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://my-personal-blog-six-gray.vercel.app/sitemap-index.xml

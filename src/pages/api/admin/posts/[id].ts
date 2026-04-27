@@ -1,0 +1,60 @@
+import type { APIRoute } from "astro";
+import { updateAdminPost } from "../../../../db/repositories/posts";
+import { requireUser } from "../../../../lib/auth";
+
+export const prerender = false;
+
+function parseTagNames(raw: string) {
+  return raw
+    .split(",")
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+export const POST: APIRoute = async (context) => {
+  const user = await requireUser(context);
+
+  if (user instanceof Response) {
+    return user;
+  }
+
+  const postId = Number(context.params.id);
+
+  if (!Number.isFinite(postId)) {
+    return context.redirect("/admin/posts");
+  }
+
+  const formData = await context.request.formData();
+  const title = String(formData.get("title") ?? "").trim();
+  const slug = String(formData.get("slug") ?? "").trim();
+  const description = String(formData.get("description") ?? "").trim();
+  const seoTitle = String(formData.get("seoTitle") ?? "").trim();
+  const seoDescription = String(formData.get("seoDescription") ?? "").trim();
+  const content = String(formData.get("content") ?? "").trim();
+  const cover = String(formData.get("cover") ?? "").trim();
+  const status = String(formData.get("status") ?? "draft") === "published"
+    ? "published"
+    : "draft";
+  const featured = formData.get("featured") === "true";
+  const tagNames = parseTagNames(String(formData.get("tags") ?? ""));
+
+  if (!title || !description || !content) {
+    return context.redirect(`/admin/posts/${postId}`);
+  }
+
+  await updateAdminPost(postId, {
+    slug,
+    title,
+    description,
+    seoTitle: seoTitle || undefined,
+    seoDescription: seoDescription || undefined,
+    content,
+    cover: cover || undefined,
+    status,
+    featured,
+    tagNames,
+    authorId: user.id,
+  });
+
+  return context.redirect(`/admin/posts/${postId}?message=updated`);
+};

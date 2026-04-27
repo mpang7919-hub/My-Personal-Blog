@@ -3,11 +3,11 @@ import { getCollection, type CollectionEntry } from "astro:content";
 export type BlogPost = CollectionEntry<"blog">;
 
 export async function getPublishedPosts(): Promise<BlogPost[]> {
-  const posts = await getCollection("blog", ({ data }) => !data.draft);
+  const posts = await getCollection("blog");
 
-  return posts.sort(
-    (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
-  );
+  return posts
+    .filter((post) => !post.data.draft && post.data.status === "published")
+    .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
 }
 
 export async function getLatestPosts(limit = 3) {
@@ -83,7 +83,7 @@ export function getRelatedPosts(posts: BlogPost[], currentPostId: string, limit 
     .map((item) => item.post);
 }
 
-export function estimateReadingMinutes(content) {
+export function estimateReadingMinutes(content: string) {
   const plainText = content
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`[^`]*`/g, " ")
@@ -99,4 +99,18 @@ export function estimateReadingMinutes(content) {
     .match(/[A-Za-z0-9_]+/g)?.length ?? 0;
 
   return Math.max(1, Math.ceil((chineseChars + latinWords) / 280));
+}
+
+export function getPostSlug(post: BlogPost) {
+  return post.data.slug || post.id;
+}
+
+export function getPostTitle(post: BlogPost, useSeo = false) {
+  return useSeo && post.data.seoTitle ? post.data.seoTitle : post.data.title;
+}
+
+export function getPostDescription(post: BlogPost, useSeo = false) {
+  return useSeo && post.data.seoDescription
+    ? post.data.seoDescription
+    : post.data.description;
 }

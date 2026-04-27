@@ -1,0 +1,53 @@
+---
+import AdminPostForm from "../../../components/AdminPostForm.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getAdminPostById } from "../../../db/repositories/posts";
+import { requireUser } from "../../../lib/auth";
+import { siteConfig } from "../../../lib/site";
+
+export const prerender = false;
+
+const user = await requireUser(Astro);
+
+if (user instanceof Response) {
+  return user;
+}
+
+const id = Number(Astro.params.id);
+const post = Number.isFinite(id) ? await getAdminPostById(id) : null;
+const message = Astro.url.searchParams.get("message");
+const messageText = message === "updated" ? "文章已保存。" : "";
+
+if (!post) {
+  return Astro.redirect("/admin/posts");
+}
+---
+
+<BaseLayout title={`编辑文章 | ${siteConfig.title}`} description="后台编辑文章。">
+  <section class="container editor-page">
+    {messageText && <p class="notice">{messageText}</p>}
+    <AdminPostForm
+      action={`/api/admin/posts/${post.id}`}
+      title={`编辑：${post.title}`}
+      submitLabel="保存更改"
+      values={post}
+    />
+  </section>
+</BaseLayout>
+
+<style>
+  .editor-page {
+    display: grid;
+    gap: 1rem;
+    padding-block: 3rem;
+  }
+
+  .notice {
+    margin: 0;
+    border: 1px solid rgba(67, 120, 84, 0.22);
+    border-radius: 18px;
+    padding: 0.9rem 1rem;
+    background: rgba(67, 120, 84, 0.08);
+    color: #2d5b39;
+  }
+</style>

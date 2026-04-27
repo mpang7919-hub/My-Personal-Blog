@@ -1,0 +1,192 @@
+---
+const {
+  action,
+  title,
+  submitLabel,
+  values = {},
+} = Astro.props as {
+  action: string;
+  title: string;
+  submitLabel: string;
+  values?: {
+    slug?: string;
+    title?: string;
+    description?: string;
+    seoTitle?: string;
+    seoDescription?: string;
+    content?: string;
+    cover?: string | null;
+    status?: "draft" | "published";
+    featured?: boolean;
+    tagNames?: string[];
+  };
+};
+
+const joinedTags = (values.tagNames ?? []).join(", ");
+---
+
+<section class="form-card">
+  <div class="form-head">
+    <p class="eyebrow">Editor</p>
+    <h1>{title}</h1>
+  </div>
+
+  <form action={action} method="POST" class="editor-form">
+    <label class="full">
+      <span>标题</span>
+      <input type="text" name="title" value={values.title ?? ""} required />
+    </label>
+
+    <div class="two-col">
+      <label>
+        <span>Slug</span>
+        <input type="text" name="slug" value={values.slug ?? ""} placeholder="article-slug" />
+      </label>
+      <label>
+        <span>状态</span>
+        <select name="status" value={values.status ?? "draft"}>
+          <option value="draft" selected={(values.status ?? "draft") === "draft"}>draft</option>
+          <option value="published" selected={values.status === "published"}>published</option>
+        </select>
+      </label>
+    </div>
+
+    <label class="full">
+      <span>摘要</span>
+      <textarea name="description" rows="3" required>{values.description ?? ""}</textarea>
+    </label>
+
+    <div class="two-col">
+      <label>
+        <span>SEO 标题</span>
+        <input type="text" name="seoTitle" value={values.seoTitle ?? ""} />
+      </label>
+      <label>
+        <span>封面链接</span>
+        <input type="text" name="cover" value={values.cover ?? ""} />
+      </label>
+    </div>
+
+    <label class="full">
+      <span>SEO 摘要</span>
+      <textarea name="seoDescription" rows="3">{values.seoDescription ?? ""}</textarea>
+    </label>
+
+    <label class="full">
+      <span>标签</span>
+      <input
+        type="text"
+        name="tags"
+        value={joinedTags}
+        placeholder="Python 爬虫, 实战, 网络请求"
+      />
+    </label>
+
+    <label class="checkbox">
+      <input
+        type="checkbox"
+        name="featured"
+        value="true"
+        checked={values.featured ?? false}
+      />
+      <span>设为精选文章</span>
+    </label>
+
+    <label class="full">
+      <span>正文内容（Markdown）</span>
+      <textarea name="content" rows="18" required>{values.content ?? ""}</textarea>
+    </label>
+
+    <div class="actions">
+      <button type="submit">{submitLabel}</button>
+      <a href="/admin/posts">返回文章列表</a>
+    </div>
+  </form>
+</section>
+
+<style>
+  .form-card {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    padding: 1.5rem;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  h1 {
+    margin: 0.25rem 0 0;
+    font-size: clamp(2rem, 6vw, 3rem);
+    letter-spacing: -0.06em;
+  }
+
+  .editor-form {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.2rem;
+  }
+
+  .two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  label {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  label span {
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  input,
+  textarea,
+  select {
+    width: 100%;
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 0.85rem 1rem;
+    background: rgba(255, 255, 255, 0.75);
+    color: var(--ink);
+    font: inherit;
+  }
+
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+  }
+
+  .checkbox input {
+    width: auto;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  button {
+    border: 0;
+    border-radius: 999px;
+    padding: 0.88rem 1.15rem;
+    background: var(--ink);
+    color: var(--panel-strong);
+    font: inherit;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: var(--accent-dark);
+  }
+
+  @media (max-width: 860px) {
+    .two-col {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

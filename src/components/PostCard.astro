@@ -1,5 +1,5 @@
 ---
-import { estimateReadingMinutes } from "../lib/posts";
+import { estimateReadingMinutes, getPostSlug } from "../lib/posts";
 import TagList from "./TagList.astro";
 
 const { post } = Astro.props;
@@ -19,7 +19,7 @@ const readingMinutes = estimateReadingMinutes(post.body);
     </p>
     <span class="reading-time">{readingMinutes} 分钟</span>
   </div>
-  <h2><a href={`/blog/${post.id}`}>{post.data.title}</a></h2>
+  <h2><a href={`/blog/${getPostSlug(post)}`}>{post.data.title}</a></h2>
   <p class="desc">{post.data.description}</p>
   <TagList tags={post.data.tags} />
 </article>

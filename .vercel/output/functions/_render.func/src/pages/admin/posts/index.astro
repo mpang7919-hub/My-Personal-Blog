@@ -1,0 +1,230 @@
+---
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { listAdminPostRowsByStatus } from "../../../db/repositories/posts";
+import { requireUser } from "../../../lib/auth";
+import { siteConfig } from "../../../lib/site";
+
+export const prerender = false;
+
+const user = await requireUser(Astro);
+
+if (user instanceof Response) {
+  return user;
+}
+
+const status = Astro.url.searchParams.get("status");
+const statusFilter =
+  status === "draft" || status === "published" ? status : "all";
+const posts = await listAdminPostRowsByStatus(statusFilter);
+const message = Astro.url.searchParams.get("message");
+const messageText =
+  message === "created"
+    ? "文章已创建。"
+    : message === "updated"
+      ? "文章已更新。"
+      : message === "deleted"
+        ? "文章已删除。"
+        : "";
+---
+
+<BaseLayout title={`文章管理 | ${siteConfig.title}`} description="后台文章管理。">
+  <section class="container admin-posts-page">
+    <div class="page-head">
+      <div>
+        <p class="eyebrow">Posts</p>
+        <h1>文章管理</h1>
+        <p class="lede">当前登录用户：{user.displayName}。这里可以新建、编辑和管理文章状态。</p>
+      </div>
+      <div class="head-actions">
+        <a class="ghost" href="/admin">返回后台</a>
+        <a class="primary" href="/admin/posts/new">新建文章</a>
+      </div>
+    </div>
+
+    {messageText && <p class="notice">{messageText}</p>}
+
+    <section class="panel">
+      <div class="filters">
+        <a class:list={["filter-link", statusFilter === "all" && "active"]} href="/admin/posts">
+          全部
+        </a>
+        <a
+          class:list={["filter-link", statusFilter === "published" && "active"]}
+          href="/admin/posts?status=published"
+        >
+          已发布
+        </a>
+        <a
+          class:list={["filter-link", statusFilter === "draft" && "active"]}
+          href="/admin/posts?status=draft"
+        >
+          草稿
+        </a>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>标题</th>
+              <th>Slug</th>
+              <th>状态</th>
+              <th>精选</th>
+              <th>更新时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            {posts.map((post) => (
+              <tr>
+                <td>
+                  <a href={`/admin/posts/${post.id}`}>{post.title}</a>
+                </td>
+                <td>{post.slug}</td>
+                <td>{post.status}</td>
+                <td>{post.featured ? "是" : "否"}</td>
+                <td>{post.updatedAt.toLocaleDateString("zh-CN")}</td>
+                <td>
+                  <div class="row-actions">
+                    <a href={`/blog/${post.slug}`} target="_blank" rel="noreferrer">预览</a>
+                    <form action={`/api/admin/posts/${post.id}/delete`} method="POST">
+                      <button type="submit" class="delete-btn">删除</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </section>
+</BaseLayout>
+
+<style>
+  .admin-posts-page {
+    display: grid;
+    gap: 1.4rem;
+    padding-block: 3rem;
+  }
+
+  .page-head,
+  .panel {
+    border: 1px solid var(--line);
+    border-radius: 28px;
+    background: var(--panel);
+    box-shadow: var(--shadow);
+  }
+
+  .page-head {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  h1 {
+    margin: 0.25rem 0 0.8rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    letter-spacing: -0.06em;
+  }
+
+  .head-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.8rem;
+  }
+
+  .primary,
+  .ghost {
+    border-radius: 999px;
+    padding: 0.78rem 1rem;
+    text-decoration: none;
+  }
+
+  .primary {
+    background: var(--ink);
+    color: var(--panel-strong);
+  }
+
+  .ghost {
+    border: 1px solid var(--line);
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.65);
+  }
+
+  .panel {
+    padding: 1.4rem;
+  }
+
+  .notice {
+    margin: 0;
+    border: 1px solid rgba(67, 120, 84, 0.22);
+    border-radius: 18px;
+    padding: 0.9rem 1rem;
+    background: rgba(67, 120, 84, 0.08);
+    color: #2d5b39;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .filter-link {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 0.55rem 0.9rem;
+    background: rgba(255, 255, 255, 0.68);
+    color: var(--ink);
+    text-decoration: none;
+  }
+
+  .filter-link.active {
+    background: var(--ink);
+    color: var(--panel-strong);
+  }
+
+  .table-wrap {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    padding: 0.9rem 0.75rem;
+    border-top: 1px dashed var(--line);
+    text-align: left;
+  }
+
+  .row-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+
+  .row-actions form {
+    margin: 0;
+  }
+
+  .delete-btn {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: #a73a25;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  @media (max-width: 860px) {
+    .page-head {
+      flex-direction: column;
+    }
+  }
+</style>
